@@ -3,50 +3,49 @@
 
 name: CI
 
-env: 
+env:
   SCREENER_API_KEY: ${{secrets.SCREENER_API_KEY}}
   SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
   SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
-  
+
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x, 20.x]
+        node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Install dependencies
-      run: |
-            cd app
-            npm ci
-    - name: Build the app
-      run: |
-            cd app
-            npm run build
-            
-    - name: Run component tests
-      run: |
-            cd app
-            npm run test
-            
-    - name: Start the app
-      run: |
-            cd app
-            npm start & 
-            npx wait-on --timeout 60000
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Install dependencies
+        run: |
+          cd app
+          npm ci
+      - name: Build the app
+        run: |
+          cd app
+          npm run build
+
+      - name: Run component tests
+        run: |
+          cd app
+          npm run test
+
+      - name: Start the app
+        run: |
+          cd app
+          npm start & 
+          npx wait-on --timeout 60000
